@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, File
 
 api = FastAPI()
 
@@ -51,3 +51,14 @@ def delete_todo(todo_id:int):
             deleted_todo = all_todos.pop(index)
             return deleted_todo
     return "Error, not found"
+
+@api.post("/upload")
+async def upload_file(file: UploadFile = File(...)):
+    zip = await file.read()
+
+    with open(file.filename, "wb") as f:
+        f.write(zip)
+    return {
+        "filename":file.filename,
+        "mensaje": "File uploaded"
+    }
